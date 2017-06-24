@@ -29,8 +29,8 @@ print('getting values...')
 dataset = dataframe.values
 print(dataset)
 print(len(dataset[0]))
-X = dataset[:,:-1].astype(float)
-Y = dataset[:,-1]
+X = np.array(dataset[:,:-1].astype(float))
+Y = np.array(dataset[:,-1])
 
 print(X)
 print(Y)
@@ -43,6 +43,16 @@ print(Y)
 #X = np.expand_dims(X,axis = 0)
 #X = np.split(X,48,axis=2)
 X = np.array([np.split(x_i,48) for x_i in X])
-print(X)
+
+# Create the model
+model = Sequential()
+model.add(Conv2D(32, (3, 3), input_shape=(3, 32, 32), padding='same', activation='relu', kernel_constraint=maxnorm(3)))
+model.add(Dropout(0.2))
+model.add(Conv2D(32, (3, 3), activation='relu', padding='same', kernel_constraint=maxnorm(3)))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Flatten())
+model.add(Dense(512, activation='relu', kernel_constraint=maxnorm(3)))
+model.add(Dropout(0.5))
+model.add(Dense(num_classes, activation='softmax'))
 
 
