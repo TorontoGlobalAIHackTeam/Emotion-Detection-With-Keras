@@ -29,9 +29,9 @@ PLAYER_COLOR =(0,204,0)
 
 full = (SCREEN_WIDTH,SCREEN_HEIGHT)
 
-global DIFFICULTY
+DIFFICULTY = 1.0
 
-DIFFICULTY = 1.0;
+JUMP_HEIGHT = 10.0
 
 class Player(pygame.sprite.Sprite):
 
@@ -149,17 +149,18 @@ class Player(pygame.sprite.Sprite):
             self.rect.y = SCREEN_HEIGHT - self.rect.height
 
     def jump(self):
-        # definizione  salto       
-        self.rect.y += 2       
+        # definizione  salto
+  
+        self.rect.y += 2.0      
         platform_hit_list = pygame.sprite.spritecollide(self, self.level.platform_list, False)
-        self.rect.y -= 2
+        self.rect.y -= 2.0
 
 
     ## -- tagged --
        
         # se salto e collido con le piattaforme fermo il player
         if self.rect.bottom >= SCREEN_HEIGHT or (len(platform_hit_list) > 0):
-            self.change_y = -12
+            self.change_y = -JUMP_HEIGHT * DIFFICULTY
             
 
     # Movimento left, right , stop
@@ -169,7 +170,7 @@ class Player(pygame.sprite.Sprite):
 
     def go_right(self):
         global DIFFICULTY
-        self.change_x = 5  #* DIFFICULTY
+        self.change_x = 5  * DIFFICULTY#* DIFFICULTY
         
     def stop(self):
         self.change_x = 0
