@@ -18,7 +18,7 @@ dataframe = pd.read_csv('train.csv', header=None)
 print('getting values...')
 dataset = dataframe.values
 print(dataset)
-X = dataset[:,0:len(dataset[0])-2].astype(float)
+X = dataset[:,0:len(dataset[0])-2].astype(int)
 Y = dataset[:,len(dataset[0])-1]
 
 p = np.zeros(Y.shape)
