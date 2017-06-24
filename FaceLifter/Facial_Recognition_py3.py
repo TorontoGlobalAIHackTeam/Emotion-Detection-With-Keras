@@ -5,15 +5,13 @@ from pathlib import Path
 
 curr_path = os.path.dirname(os.path.realpath(__file__));
 
-#directory_in_str = input("Enter image directory path: ");
-#output_directory = input("Enter Output directory path: ");
 
 directory_in_str = str(curr_path) + "\\Input";
 output_directory = str(curr_path) + "\\Output";
 
 all_faces = [];
 
-pathlist = Path(directory_in_str) #.glob('**/*.asm')
+pathlist = Path(directory_in_str) 
 for path in pathlist.iterdir():
     # because path is object not string
     path_in_str = str(path)
@@ -61,13 +59,27 @@ for path in pathlist.iterdir():
         for i in range(0, w):
             for j in range(0, h):
                 blank_image[j][i] = gray[y + j][x + i];
+                
+        face_resize = cv2.resize(blank_image, (48, 48), 3);
 
-        #cv2.imshow("Face " + str(count), blank_image);
+        all_faces.append(face_resize);
 
-        all_faces.append(blank_image);
 
+colour_list = [];
+
+output_file = open(output_directory + "\\output_file.txt", "w");
 for i in range(0, len(all_faces)):
-    #cv2.imshow("Face " + str(i), all_faces[i]);
+
+    file_string = "";
+
+    for j in range(0, 48):
+        for k in range(0, 48):
+            file_string += str(all_faces[i][j][k][0]) + " ";
+
+    file_string = file_string.strip();
+
+    output_file.write(file_string + "\n");
+    
     cv2.imwrite(output_directory + "\\face_" + str(i) + ".jpg", all_faces[i]);
 
 cv2.waitKey(0);
