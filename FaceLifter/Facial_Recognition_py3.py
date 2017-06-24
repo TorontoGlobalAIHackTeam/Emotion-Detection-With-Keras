@@ -4,7 +4,7 @@ import os;
 from pathlib import Path
 
 curr_path = os.path.dirname(os.path.realpath(__file__));
-
+print curr_path;
 
 directory_in_str = str(curr_path) + "\\Input";
 output_directory = str(curr_path) + "\\Output";
