@@ -1,4 +1,4 @@
-﻿import pygame
+import pygame
 import cv2
 import numpy as np
 from pygame.locals import *
@@ -38,8 +38,7 @@ full = (SCREEN_WIDTH,SCREEN_HEIGHT)
 
 global DIFFICULTY
 
-DIFFICULTY = 1.0
-JUMP_HEIGHT = 10.0
+DIFFICULTY = 1.0;
 
 class Player(pygame.sprite.Sprite):
 
@@ -114,7 +113,6 @@ class Player(pygame.sprite.Sprite):
         #Muovo su e giu
         self.rect.y += self.change_y
 
-        
 
         # spritecollide su e giu
         block_hit_list = pygame.sprite.spritecollide(self, self.level.platform_list, False)
@@ -126,15 +124,17 @@ class Player(pygame.sprite.Sprite):
 
                 if (self.MORTAL):
                     ## CHANGED -- tagged --
-                    #se collido in y con gli obstacles game over
+                    #If I collide in y with the obstacles game over
                     if self.level.obstacles_list.has(block):
-                        #vado a y 510 e riavvio
+                        #I go to y 510 and restart
                         self.attempt +=1
                         self.life -= 1
                         self.life += 1
                         self.rect.x = -5
                         self.rect.y = 550
-                    
+
+            if self.change_y < 0:
+                self.rect.bottom = block.rect.top
                     
             # Movimento Veritcale a 0
             self.change_y = 0
@@ -157,17 +157,23 @@ class Player(pygame.sprite.Sprite):
             self.rect.y = SCREEN_HEIGHT - self.rect.height
 
     def jump(self):
-        # definizione  salto       
-        self.rect.y += 2       
+        # Definition jumping
+        
+        self.rect.y += 3      
         platform_hit_list = pygame.sprite.spritecollide(self, self.level.platform_list, False)
-        self.rect.y -= 2
+        self.rect.y -= 3
 
 
+        for platform in platform_hit_list:
+            if self.change_y < 0:
+                self.rect.bottom = platform.rect.top
+                print("top it")
+        
     ## -- tagged --
        
-        # se salto e collido con le piattaforme fermo il player
+        # If I jump and collide with the platform shut down the player
         if self.rect.bottom >= SCREEN_HEIGHT or (len(platform_hit_list) > 0):
-            self.change_y = -JUMP_HEIGHT * DIFFICULTY
+            self.change_y = -9
             
 
     # Movimento left, right , stop
@@ -207,7 +213,6 @@ class Platform(pygame.sprite.Sprite):
         width = min((int)(width * DIFFICULTY), 10000)
         
         pygame.sprite.Sprite.__init__(self)
-
         
         
         self.image = pygame.Surface([width, height])
@@ -765,6 +770,7 @@ def main():
     screen.blit(background_menu,(0,0))
     pygame.display.flip()
 
+    tick_speed = 1
 
     menu = cMenu(20, 00, 100, 28, 'vertical', 100, screen,
                [('PLAY', 1, None),
@@ -779,8 +785,6 @@ def main():
     rect_list = []
 
     while 1:
-    
-      
 
       if prev_state != state:
          pygame.event.post(pygame.event.Event(EVENT_CHANGE_STATE, key = 0))
@@ -870,9 +874,9 @@ def main():
                    #cv2.imshow('frame', frame)
                    if cv2.waitKey(1) & 0xFF == ord('q'):
                        break
-                 for event in pygame.event.get():
+                   for event in pygame.event.get():
                      if event.type == pygame.QUIT:
-                         done = True
+                         done = True                 
 
             #--------------------------------------------------JOYPAD---------------------------
 
@@ -929,9 +933,35 @@ def main():
                              DIFFICULTY += 0.1
                              print (DIFFICULTY)
 
+
                          if event.key == pygame.K_w:
                              DIFFICULTY -= 0.1
                              print (DIFFICULTY)
+                             
+
+                         if event.key == pygame.K_t:
+##                             level_list = []
+##                             level_list.append( Level_01(player) )
+##                             level_list.append( Level_02(player) )
+##                             level_list.append( Level_03(player) )
+##                             print("Updated list")
+
+
+                             set_level = -1
+
+                             if (current_level_no == 0):
+                                 set_level = Level_01(player)
+                             elif (current_level_no == 1):
+                                 set_level = Level_02(player)
+                             else:
+                                set_level = Level_03(player)
+
+                             
+                             player.level = current_level = level_list[current_level_no] = set_level
+       
+                             player.update()
+                                 
+                             
 
                          if event.key == pygame.K_e:
                              player.MORTAL = False;
@@ -940,8 +970,20 @@ def main():
                          if event.key == pygame.K_r:
                              player.MORTAL = True;
                              print("MORTAL")
+
+                         
+                         if event.key == pygame.K_y:
+                             tick_speed += 1;
                     
-                
+
+                         if event.key == pygame.K_a:
+                             print("q - increase DIFFICULTY")
+                             print("w - decrease DIFFICULTY")
+                             print("t - update levels")
+                             print("e - IMMORTAL")
+                             print("r - MORTAL")
+                             print("y - change speed")
+                                   
 
                      if event.type == pygame.KEYUP:
                          if event.key == pygame.K_RIGHT and player.change_x > 0:
@@ -1104,20 +1146,19 @@ def main():
                 #--------------------PUNTEGGIO - lvl - ATTEMPT------------------------------------------
       
 
-                # 60 frame
-                 clock.tick(60)
-                
-                #screen.blit(frame, (SCREEN_WIDTH - 1,SCREEN_HEIGHT - 144))
-                #pygame.display.update()
-                
+                 # 60 frame
+                 ##global DIFFICULTY
+                 ## -- tagged --
+
+                 ##tick_speed = 60 * DIFFICULTY
+
+                 clock.tick(tick_speed * 30 % 180 + 30)
+
                  screen.blit(frame, (SCREEN_WIDTH - 144,SCREEN_HEIGHT - 120))
                 
                 
                 #UPDATE
                  pygame.display.flip()
-                 
-                 #screen.blit(frame, (SCREEN_WIDTH - 144,SCREEN_HEIGHT - 120))
-                
 
             #EXIT
              pygame.quit()
@@ -1177,13 +1218,9 @@ def main():
           sys.exit()
 
       pygame.display.update(rect_list)
-  # When everything done, release the capture
-    camera.release()
-    cv2.destroyAllWindows()
+
 
 
 if __name__ == "__main__":
     main()
    
-
-

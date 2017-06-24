@@ -2,6 +2,17 @@ import os
 import numpy as np
 import pandas as pd
 import csv
+
+import numpy
+import pandas
+from keras.models import Sequential
+from keras.layers import Dense
+from keras.wrappers.scikit_learn import KerasClassifier
+from keras.utils import np_utils
+from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import KFold
+from sklearn.preprocessing import LabelEncoder
+from sklearn.pipeline import Pipeline
 #from scipy.misc import imread
 #from sklearn.metrics import accuracy_score
 
@@ -38,7 +49,6 @@ print(Y)
 #one-hot encoding
 s = pd.Series(Y)
 Y = pd.get_dummies(s)
-print(Y)
 
 #X = np.expand_dims(X,axis = 0)
 #X = np.split(X,48,axis=2)
