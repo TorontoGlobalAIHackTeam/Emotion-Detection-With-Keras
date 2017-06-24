@@ -1,9 +1,16 @@
 ﻿import pygame
+import cv2
+import numpy as np
 from pygame.locals import *
 import random
 import sys
+
 from menu import *
 pygame.init()
+camera = cv2.VideoCapture(0)
+pygame.display.set_caption("OpenCV camera stream on Pygame")
+camera.set(3,144)
+camera.set(4,144)
 
 #costanti globali
 
@@ -29,8 +36,9 @@ PLAYER_COLOR =(0,204,0)
 
 full = (SCREEN_WIDTH,SCREEN_HEIGHT)
 
-DIFFICULTY = 1.0
+global DIFFICULTY
 
+DIFFICULTY = 1.0
 JUMP_HEIGHT = 10.0
 
 class Player(pygame.sprite.Sprite):
@@ -149,11 +157,10 @@ class Player(pygame.sprite.Sprite):
             self.rect.y = SCREEN_HEIGHT - self.rect.height
 
     def jump(self):
-        # definizione  salto
-  
-        self.rect.y += 2.0      
+        # definizione  salto       
+        self.rect.y += 2       
         platform_hit_list = pygame.sprite.spritecollide(self, self.level.platform_list, False)
-        self.rect.y -= 2.0
+        self.rect.y -= 2
 
 
     ## -- tagged --
@@ -170,7 +177,7 @@ class Player(pygame.sprite.Sprite):
 
     def go_right(self):
         global DIFFICULTY
-        self.change_x = 5  * DIFFICULTY#* DIFFICULTY
+        self.change_x = 5  #* DIFFICULTY
         
     def stop(self):
         self.change_x = 0
@@ -772,6 +779,8 @@ def main():
     rect_list = []
 
     while 1:
+    
+      
 
       if prev_state != state:
          pygame.event.post(pygame.event.Event(EVENT_CHANGE_STATE, key = 0))
@@ -829,8 +838,38 @@ def main():
             #-------------------------------------------JOYPAD-----------------------------
              clock = pygame.time.Clock()
              done = False
-
+             time_elapsed = 0
+             
+             ret, frame = camera.read()
+                   
+             #screen.fill([0,0,0])
+             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+             frame = np.rot90(frame)
+             frame = pygame.surfarray.make_surface(frame)
+             
              while not done:
+                 # Capture frame-by-frame
+                 dt = clock.tick()
+                 
+                 time_elapsed += dt
+                 if time_elapsed > 0.1:
+                   time_elapsed = 0
+                   ret, frame = camera.read()
+                   
+                   #screen.fill([0,0,0])
+                   frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                   frame = np.rot90(frame)
+                   frame = pygame.surfarray.make_surface(frame)
+                   #screen.blit(frame, (SCREEN_WIDTH - 144,SCREEN_HEIGHT - 144))
+                   pygame.display.update()
+
+                    # Our operations on the frame come here
+                    #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+                    # Display the resulting frame
+                   #cv2.imshow('frame', frame)
+                   if cv2.waitKey(1) & 0xFF == ord('q'):
+                       break
                  for event in pygame.event.get():
                      if event.type == pygame.QUIT:
                          done = True
@@ -1067,9 +1106,18 @@ def main():
 
                 # 60 frame
                  clock.tick(60)
-
+                
+                #screen.blit(frame, (SCREEN_WIDTH - 1,SCREEN_HEIGHT - 144))
+                #pygame.display.update()
+                
+                 screen.blit(frame, (SCREEN_WIDTH - 144,SCREEN_HEIGHT - 120))
+                
+                
                 #UPDATE
                  pygame.display.flip()
+                 
+                 #screen.blit(frame, (SCREEN_WIDTH - 144,SCREEN_HEIGHT - 120))
+                
 
             #EXIT
              pygame.quit()
@@ -1129,7 +1177,9 @@ def main():
           sys.exit()
 
       pygame.display.update(rect_list)
-
+  # When everything done, release the capture
+    camera.release()
+    cv2.destroyAllWindows()
 
 
 if __name__ == "__main__":
