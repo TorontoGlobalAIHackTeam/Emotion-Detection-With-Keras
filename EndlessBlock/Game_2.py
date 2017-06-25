@@ -1,6 +1,7 @@
 import pygame
 import cv2
 import numpy as np
+import os;
 from pygame.locals import *
 import random
 import sys
@@ -11,6 +12,9 @@ camera = cv2.VideoCapture(0)
 pygame.display.set_caption("OpenCV camera stream on Pygame")
 camera.set(3,144)
 camera.set(4,144)
+
+CURR_PATH = os.path.dirname(os.path.realpath(__file__));
+OUTPUT_DIRECTORY = str(CURR_PATH) + "\\Input";
 
 #costanti globali
 
@@ -867,6 +871,7 @@ def main():
                  my_joystick.init()
    
             #-------------------------------------------JOYPAD-----------------------------
+             global OUTPUT_DIRECTORY
              clock = pygame.time.Clock()
              #cam_clock = pygame.time.Clock()
              
@@ -880,6 +885,7 @@ def main():
              frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
              frame = np.rot90(frame)
              frame = pygame.surfarray.make_surface(frame)
+             
              
              while not done:
              
@@ -898,34 +904,17 @@ def main():
                  else:
                   P_R -= 1
                   P_G -= 1
-                  P_B -= 1
-                
-                 """
-                 if (P_R != 255):
-                  P_R += 1
-                 elif (P_G != 255):
-                  P_R -= 20
-                  P_G += 1
-                 elif (P_B != 255):
-                  P_R -= 40
-                  P_G -= 20
-                  P_B += 1
-                 else:
-                  P_R = P_G = P_B = 0
-                  """
-                 
-             
+                  P_B -= 1 
+                  
+                 global OUTPUT_DIRECTORY
                  # Capture frame-by-frame
                  dt = clock.tick()
                  
-                 
-                 
                  time_elapsed += dt
-                 if time_elapsed > 0.1:
+                 if time_elapsed > 30:
                    time_elapsed = 0
                    ret, frame = camera.read()
-                   
-                   #screen.fill([0,0,0])
+                   cv2.imwrite(OUTPUT_DIRECTORY + "\\face.jpg", frame)
                    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                    frame = np.rot90(frame)
                    frame = pygame.surfarray.make_surface(frame)
@@ -936,82 +925,83 @@ def main():
                     #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
                     # Display the resulting frame
-                   #cv2.imshow('frame', frame)
+                   #cv2.imshow('frame', frame)    cv2.imwrite(output_directory + "\\face_" + str(i) + ".jpg", all_faces[i]);
+
                    if cv2.waitKey(1) & 0xFF == ord('q'):
                        break
-                   for event in pygame.event.get():
-                     if event.type == pygame.QUIT:
-                         done = True                 
+                 for event in pygame.event.get():
+                   if event.type == pygame.QUIT:
+                       done = True                 
 
-            #--------------------------------------------------JOYPAD---------------------------
+          #--------------------------------------------------JOYPAD---------------------------
 
-                     elif event.type == pygame.JOYBUTTONDOWN:
-                         nome = 'joystick%d-pulsante%d-giu' % (event.joy, event.button)
-                         print (nome)
+                   elif event.type == pygame.JOYBUTTONDOWN:
+                       nome = 'joystick%d-pulsante%d-giu' % (event.joy, event.button)
+                       print (nome)
 
-                         if event.button == 0:
-                             player.jump()
-                         if event.button == 7:
-                             player.stop()
+                       if event.button == 0:
+                           player.jump()
+                       if event.button == 7:
+                           player.stop()
 
-                     elif event.type == pygame.JOYBUTTONUP:
-                             nome = 'joystick%d-pulsante%d-su' % (event.joy, event.button)
-                             print(nome)
-                    
+                   elif event.type == pygame.JOYBUTTONUP:
+                           nome = 'joystick%d-pulsante%d-su' % (event.joy, event.button)
+                           print(nome)
+                  
 
-                     elif event.type == pygame.JOYHATMOTION:                
-                         nome = 'joystick%d-axis%d' % (event.joy, event.hat)
-                         print (nome, event.value)
-                         if event.hat == 0:
-                             player.go_right()
-                         else:
-                             player.stop()
+                   elif event.type == pygame.JOYHATMOTION:                
+                       nome = 'joystick%d-axis%d' % (event.joy, event.hat)
+                       print (nome, event.value)
+                       if event.hat == 0:
+                           player.go_right()
+                       else:
+                           player.stop()
 
+         
+          #--------------------------------------------------JOYPAD---------------------------
+                   elif event.type == pygame.KEYDOWN:
+                       if event.key == pygame.K_0:
+                           screen = pygame.display.set_mode((full),pygame.FULLSCREEN)
+                       if event.key == pygame.K_1:
+                           screen = pygame.display.set_mode(size)
+                       if event.key == pygame.K_ESCAPE:
+                           main()
+
+                      #if event.key == pygame.K_SPACE:
+                      #    proiettili = Proiettili()
+                      #    proiettili.rect.x = player.rect.x 
+                      #    proiettili.rect.y = player.rect.y+10 
+                      #    active_sprite_list.add(proiettili)
+                      #    proiettili_lista.add(proiettili)
            
-            #--------------------------------------------------JOYPAD---------------------------
-                     elif event.type == pygame.KEYDOWN:
-                         if event.key == pygame.K_0:
-                             screen = pygame.display.set_mode((full),pygame.FULLSCREEN)
-                         if event.key == pygame.K_1:
-                             screen = pygame.display.set_mode(size)
-                         if event.key == pygame.K_ESCAPE:
-                             main()
+          #-----------------------------------------------------KEYBOARD-----------------------         
+            
+                       if event.key == pygame.K_RIGHT:
+                           player.go_right()                                     
+                       if event.key == pygame.K_UP:
+                           player.jump()
 
-                        #if event.key == pygame.K_SPACE:
-                        #    proiettili = Proiettili()
-                        #    proiettili.rect.x = player.rect.x 
-                        #    proiettili.rect.y = player.rect.y+10 
-                        #    active_sprite_list.add(proiettili)
-                        #    proiettili_lista.add(proiettili)
-             
-            #-----------------------------------------------------KEYBOARD-----------------------         
-              
-                         if event.key == pygame.K_RIGHT:
-                             player.go_right()                                     
-                         if event.key == pygame.K_UP:
-                             player.jump()
+                       global DIFFICULTY
 
-                         global DIFFICULTY
-
-                        ## -- tagged --
-                         if event.key == pygame.K_q:
-                             DIFFICULTY += 0.1
-                             print (DIFFICULTY)
+                      ## -- tagged --
+                       if event.key == pygame.K_q:
+                           DIFFICULTY += 0.1
+                           print (DIFFICULTY)
 
 
-                         if event.key == pygame.K_w:
-                             DIFFICULTY -= 0.1
-                             print (DIFFICULTY)
-                         
-                         if event.key == pygame.K_c:
-                             player.level.background = BG_1 #pygame.image.load('assets/sprites/background_lvl_1.png').convert()
-                             screen.blit(player.level.background,(0,0))
-                             
-                         if event.key == pygame.K_v:
-                             player.level.background = BG_1i #pygame.image.load('assets/sprites/background_lvl_1_invert.png').convert()
-                             screen.blit(player.level.background,(0,0))
+                       if event.key == pygame.K_w:
+                           DIFFICULTY -= 0.1
+                           print (DIFFICULTY)
+                       
+                       if event.key == pygame.K_c:
+                           player.level.background = BG_1 #pygame.image.load('assets/sprites/background_lvl_1.png').convert()
+                           screen.blit(player.level.background,(0,0))
+                           
+                       if event.key == pygame.K_v:
+                           player.level.background = BG_1i #pygame.image.load('assets/sprites/background_lvl_1_invert.png').convert()
+                           screen.blit(player.level.background,(0,0))
 
-                         if event.key == pygame.K_t:
+                       if event.key == pygame.K_t:
 ##                             level_list = []
 ##                             level_list.append( Level_01(player) )
 ##                             level_list.append( Level_02(player) )
@@ -1019,78 +1009,78 @@ def main():
 ##                             print("Updated list")
 
 
-                             set_level = -1
+                           set_level = -1
 
-                             if (current_level_no == 0):
-                                 set_level = Level_01(player)
-                             elif (current_level_no == 1):
-                                 set_level = Level_02(player)
-                             else:
-                                set_level = Level_03(player)
+                           if (current_level_no == 0):
+                               set_level = Level_01(player)
+                           elif (current_level_no == 1):
+                               set_level = Level_02(player)
+                           else:
+                              set_level = Level_03(player)
 
-                             
-                             player.level = current_level = level_list[current_level_no] = set_level
-       
-                             player.update()
+                           
+                           player.level = current_level = level_list[current_level_no] = set_level
+     
+                           player.update()
+                               
+                           
+
+                       if event.key == pygame.K_e:
+                           player.MORTAL = False;
+                           print("IMMORTAL")
+
+                       if event.key == pygame.K_r:
+                           player.MORTAL = True;
+                           print("MORTAL")
+
+                       
+                       if event.key == pygame.K_y:
+                           tick_speed += 1;
+                           
+                       if event.key == pygame.K_u:
+                       #width, height, x e y
+                       
+                          """
+                          for platform in level:
+                            block = Platform(platform[0], platform[1])
+                            block.rect.x = platform[2]
+                            block.rect.y = platform[3]
+                            block.player = self.player
+                            self.platform_list.add(block)
+                          """
+                          #global DIFFICULTY
+                            
+                          local_platform_list = player.level.platform_list
+                          player.level.platform_list = []
+                       
+                          for plat in local_platform_list:
+                            local_width = (int)(max(plat.width * DIFFICULTY, 10000))
+                            local_height = plat.height
+                            
+                            block = Platform(local_width, local_height)
+                            block.rect.x = plat.rect.x
+                            block.rect.y = plat.rect.y
+                            block.player = player
+                            player.level.platform_list.append(block)
+                              
+                              
+
+                       if event.key == pygame.K_a:
+                           print("q - increase DIFFICULTY")
+                           print("w - decrease DIFFICULTY")
+                           print("t - update levels")
+                           print("e - IMMORTAL")
+                           print("r - MORTAL")
+                           print("y - change speed")
                                  
-                             
 
-                         if event.key == pygame.K_e:
-                             player.MORTAL = False;
-                             print("IMMORTAL")
-
-                         if event.key == pygame.K_r:
-                             player.MORTAL = True;
-                             print("MORTAL")
-
-                         
-                         if event.key == pygame.K_y:
-                             tick_speed += 1;
-                             
-                         if event.key == pygame.K_u:
-                         #width, height, x e y
-                         
-                            """
-                            for platform in level:
-                              block = Platform(platform[0], platform[1])
-                              block.rect.x = platform[2]
-                              block.rect.y = platform[3]
-                              block.player = self.player
-                              self.platform_list.add(block)
-                            """
-                            #global DIFFICULTY
-                              
-                            local_platform_list = player.level.platform_list
-                            player.level.platform_list = []
-                         
-                            for plat in local_platform_list:
-                              local_width = (int)(max(plat.width * DIFFICULTY, 10000))
-                              local_height = plat.height
-                              
-                              block = Platform(local_width, local_height)
-                              block.rect.x = plat.rect.x
-                              block.rect.y = plat.rect.y
-                              block.player = player
-                              player.level.platform_list.append(block)
-                                
-                                
-
-                         if event.key == pygame.K_a:
-                             print("q - increase DIFFICULTY")
-                             print("w - decrease DIFFICULTY")
-                             print("t - update levels")
-                             print("e - IMMORTAL")
-                             print("r - MORTAL")
-                             print("y - change speed")
-                                   
-
-                     if event.type == pygame.KEYUP:
-                         if event.key == pygame.K_RIGHT and player.change_x > 0:
-                             player.go_right()
-                         if event.key == pygame.K_s and player.change_x >0:
-                             player.stop()                           
-                         if event.key == pygame.K_UP and player.change_x == 0:
-                             player.stop()
+                   if event.type == pygame.KEYUP:
+                       if event.key == pygame.K_RIGHT and player.change_x > 0:
+                           player.go_right()
+                       if event.key == pygame.K_s and player.change_x >0:
+                           player.stop()                           
+                       if event.key == pygame.K_UP and player.change_x == 0:
+                           player.stop()
 
 
                       
