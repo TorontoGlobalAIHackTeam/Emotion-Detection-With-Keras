@@ -18,7 +18,7 @@ np.random.seed(123)  # for reproducibility
 
 print('loading data...')
 # load dataset
-dataframe = pd.read_csv('train1.csv', header=None)
+dataframe = pd.read_csv('train.csv', header=None, nrows=1000)
 print('getting values...')
 dataset = dataframe.values
 X = np.array(dataset[:,:-1].astype(float))
@@ -76,7 +76,7 @@ model.compile(loss='categorical_crossentropy',
               optimizer='adam',
               metrics=['accuracy'])
 
-history = model.fit(X, Y, validation_split=0.33, batch_size=48, nb_epoch=25, verbose=1)
+history = model.fit(X, Y, validation_split=0.33, batch_size=48, nb_epoch=3, verbose=1)
 scores = model.evaluate(X_t, Y_t, verbose=0)
 
 print(model.summary())
@@ -91,7 +91,7 @@ print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 
 # serialize model to JSON
 model_json = model.to_json()
-with open("dillion_model_final.json", "w") as json_file:
+with open("dillion_model.json", "w") as json_file:
     json_file.write(model_json)
 # serialize weights to HDF5
 model.save_weights("dillion_model.h5")
