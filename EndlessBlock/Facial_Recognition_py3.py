@@ -53,19 +53,21 @@ def cropPic(image):
       faceGlobal = face_resize;
 
 
+
   colour_list = [];
 
   output_file = open(output_directory + "\\output_file.txt", "w");
   file_string = "";
 
   global faceGlobal
-  file_string += str(faceGlobal);
+  print(faceGlobal)
+  #file_string += faceGlobal
 
   file_string = file_string.strip();
 
   output_file.write(file_string + "\n");
   
-  cv2.imwrite(output_directory + "\\face.jpg", faceGlobal[0]);
+  cv2.imwrite(output_directory + "\\face.jpg", faceGlobal);
 
   cv2.waitKey(0);
 
