@@ -50,24 +50,32 @@ def cropPic(image):
               
       face_resize = cv2.resize(blank_image, (48, 48), 3);
 
-      faceGlobal = face_resize;
+      faceGlobal.append(face_resize);
 
 
 
   colour_list = [];
 
-  output_file = open(output_directory + "\\output_file.txt", "w");
-  file_string = "";
-
-  global faceGlobal
-  print(faceGlobal)
-  #file_string += faceGlobal
-
-  file_string = file_string.strip();
-
-  output_file.write(file_string + "\n");
+  out_arr = []
   
-  cv2.imwrite(output_directory + "\\face.jpg", faceGlobal);
+  output_file = open(output_directory + "\\output_file.txt", "w");
+  for i in range (0, len(faceGlobal)):
+    file_string = "[";
+
+    for j in range(0, 48):
+          file_string += "[";
+          for k in range(0, 48):
+              file_string += str(faceGlobal[i][j][k][0]);
+               
+              if (k != 47):
+                file_string += ","
+          file_string += "],";
+
+    file_string = file_string.strip(",");
+
+    output_file.write(file_string + "]\n");
+    
+    cv2.imwrite(output_directory + "\\face.jpg", faceGlobal[i]);
 
   cv2.waitKey(0);
 
