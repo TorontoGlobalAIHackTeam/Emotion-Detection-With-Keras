@@ -9,10 +9,10 @@ import sys
 
 from menu import *
 pygame.init()
-camera = cv2.VideoCapture(0)
-pygame.display.set_caption("OpenCV camera stream on Pygame")
-camera.set(3,144)
-camera.set(4,144)
+##camera = cv2.VideoCapture(0)
+##pygame.display.set_caption("OpenCV camera stream on Pygame")
+##camera.set(3,144)
+##camera.set(4,144)
 
 CURR_PATH = os.path.dirname(os.path.realpath(__file__));
 OUTPUT_DIRECTORY = str(CURR_PATH) + "\\Input";
@@ -37,6 +37,23 @@ RED_HEARTH =(219,32,39)
 # Dimensione Schermo
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 576
+<<<<<<< HEAD
+=======
+
+global P_R, P_B, P_G, PLAYER_COLOR
+
+P_R = 0
+P_G = 204
+P_B = 0
+
+PLAYER_COLOR = (P_R,P_G,P_B)
+
+global MOOD, COMP_COLOR
+
+MOOD = "ANGRY"
+
+COMP_COLOR = RED
+>>>>>>> 704b70c0f755b50a794e1e0769b446c5e773f850
 
 global P_R, P_B, P_G, PLAYER_COLOR
 
@@ -887,12 +904,14 @@ def main():
              done = False
              time_elapsed = 0
              
-             ret, frame = camera.read()
-                   
-             #screen.fill([0,0,0])
-             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-             frame = np.rot90(frame)
-             frame = pygame.surfarray.make_surface(frame)
+##             ret, frame = camera.read()
+##                   
+##             #screen.fill([0,0,0])
+##             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+##             frame = np.rot90(frame)
+##             frame = pygame.surfarray.make_surface(frame)
+
+             
              
              while not done:
              
@@ -900,6 +919,7 @@ def main():
 
                  PLAYER_COLOR = (P_R,P_G,P_B)
                  player.image.fill(PLAYER_COLOR)
+<<<<<<< HEAD
    
                  if (P_R < 100):
                   P_R += 1
@@ -959,6 +979,31 @@ def main():
                      else:
                          P_G -= 1
                  
+=======
+
+                 global MOOD, COMP_COLOR
+                 
+
+                 if MOOD == "ANGRY":
+                     COMP_COLOR = RED
+                 elif MOOD == "SAD":
+                     COMP_COLOR = BLUE
+                 else:
+                     COMP_COLOR = GREEN
+
+                 if (PLAYER_COLOR[0] != COMP_COLOR[0]):
+                     if (P_R < COMP_COLOR[0]):
+                         P_R += 1
+                     else:
+                         P_R -= 1
+
+                 if (PLAYER_COLOR[1] != COMP_COLOR[1]):
+                     if (P_G < COMP_COLOR[1]):
+                         P_G += 1
+                     else:
+                         P_G -= 1
+                 
+>>>>>>> 704b70c0f755b50a794e1e0769b446c5e773f850
                  if (PLAYER_COLOR[2] != COMP_COLOR[2]):
                      if (P_B < COMP_COLOR[2]):
                          P_B += 1
@@ -1327,7 +1372,14 @@ def main():
 
                  clock.tick(tick_speed * 30 % 180 + 30)
                  #cam_clock.tick(30)
+<<<<<<< HEAD
                  screen.blit(frame, (SCREEN_WIDTH - 144,SCREEN_HEIGHT - 120))
+=======
+                 
+                 #screen.blit(frame, (SCREEN_WIDTH - 144,SCREEN_HEIGHT - 120))
+                
+                
+>>>>>>> 704b70c0f755b50a794e1e0769b446c5e773f850
                 #UPDATE
                  pygame.display.flip()
 
