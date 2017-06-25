@@ -9,10 +9,10 @@ import sys
 
 from menu import *
 pygame.init()
-##camera = cv2.VideoCapture(0)
-##pygame.display.set_caption("OpenCV camera stream on Pygame")
-##camera.set(3,144)
-##camera.set(4,144)
+camera = cv2.VideoCapture(0)
+pygame.display.set_caption("OpenCV camera stream on Pygame")
+camera.set(3,144)
+camera.set(4,144)
 
 CURR_PATH = os.path.dirname(os.path.realpath(__file__));
 OUTPUT_DIRECTORY = str(CURR_PATH) + "\\Input";
@@ -45,16 +45,12 @@ P_G = 204
 P_B = 0
 
 PLAYER_COLOR = (P_R,P_G,P_B)
-<<<<<<< HEAD
-=======
 
 global MOOD, COMP_COLOR
 
 MOOD = "ANGRY"
 
 COMP_COLOR = RED
->>>>>>> oops copied old files last time haha
-
 full = (SCREEN_WIDTH,SCREEN_HEIGHT)
 
 global DIFFICULTY
@@ -891,15 +887,12 @@ def main():
              done = False
              time_elapsed = 0
              
-##             ret, frame = camera.read()
-##                   
-##             #screen.fill([0,0,0])
-##             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-##             frame = np.rot90(frame)
-##             frame = pygame.surfarray.make_surface(frame)
-
-             
-             
+             ret, frame = camera.read()
+                   
+             #screen.fill([0,0,0])
+             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+             frame = np.rot90(frame)
+             frame = pygame.surfarray.make_surface(frame)
              
              while not done:
              
@@ -907,9 +900,7 @@ def main():
 
                  PLAYER_COLOR = (P_R,P_G,P_B)
                  player.image.fill(PLAYER_COLOR)
-<<<<<<< HEAD
-             
-             
+   
                  if (P_R < 100):
                   P_R += 1
                  elif (P_G < 100):
@@ -945,11 +936,7 @@ def main():
 
                    if cv2.waitKey(1) & 0xFF == ord('q'):
                        break
-                 for event in pygame.event.get():
-                   if event.type == pygame.QUIT:
-                       done = True                 
-=======
-
+                       
                  global MOOD, COMP_COLOR
                  
 
@@ -1007,11 +994,10 @@ def main():
                  for event in pygame.event.get():
                      if event.type == pygame.QUIT:
                          done = True                 
->>>>>>> oops copied old files last time haha
 
           #--------------------------------------------------JOYPAD---------------------------
 
-                   elif event.type == pygame.JOYBUTTONDOWN:
+                     elif event.type == pygame.JOYBUTTONDOWN:
                        nome = 'joystick%d-pulsante%d-giu' % (event.joy, event.button)
                        print (nome)
 
@@ -1020,12 +1006,12 @@ def main():
                        if event.button == 7:
                            player.stop()
 
-                   elif event.type == pygame.JOYBUTTONUP:
+                     elif event.type == pygame.JOYBUTTONUP:
                            nome = 'joystick%d-pulsante%d-su' % (event.joy, event.button)
                            print(nome)
                   
 
-                   elif event.type == pygame.JOYHATMOTION:                
+                     elif event.type == pygame.JOYHATMOTION:                
                        nome = 'joystick%d-axis%d' % (event.joy, event.hat)
                        print (nome, event.value)
                        if event.hat == 0:
@@ -1033,53 +1019,7 @@ def main():
                        else:
                            player.stop()
 
-         
-          #--------------------------------------------------JOYPAD---------------------------
-                   elif event.type == pygame.KEYDOWN:
-                       if event.key == pygame.K_0:
-                           screen = pygame.display.set_mode((full),pygame.FULLSCREEN)
-                       if event.key == pygame.K_1:
-                           screen = pygame.display.set_mode(size)
-                       if event.key == pygame.K_ESCAPE:
-                           main()
-
-                      #if event.key == pygame.K_SPACE:
-                      #    proiettili = Proiettili()
-                      #    proiettili.rect.x = player.rect.x 
-                      #    proiettili.rect.y = player.rect.y+10 
-                      #    active_sprite_list.add(proiettili)
-                      #    proiettili_lista.add(proiettili)
-           
-<<<<<<< HEAD
-          #-----------------------------------------------------KEYBOARD-----------------------         
-            
-                       if event.key == pygame.K_RIGHT:
-                           player.go_right()                                     
-                       if event.key == pygame.K_UP:
-                           player.jump()
-
-                       global DIFFICULTY
-
-                      ## -- tagged --
-                       if event.key == pygame.K_q:
-                           DIFFICULTY += 0.1
-                           print (DIFFICULTY)
-
-
-                       if event.key == pygame.K_w:
-                           DIFFICULTY -= 0.1
-                           print (DIFFICULTY)
-                       
-                       if event.key == pygame.K_c:
-                           player.level.background = BG_1 #pygame.image.load('assets/sprites/background_lvl_1.png').convert()
-                           screen.blit(player.level.background,(0,0))
-                           
-                       if event.key == pygame.K_v:
-                           player.level.background = BG_1i #pygame.image.load('assets/sprites/background_lvl_1_invert.png').convert()
-                           screen.blit(player.level.background,(0,0))
-
-                       if event.key == pygame.K_t:
-=======
+    
             #--------------------------------------------------JOYPAD---------------------------
                      elif event.type == pygame.KEYDOWN:
                          if event.key == pygame.K_0:
@@ -1124,7 +1064,6 @@ def main():
                              screen.blit(player.level.background,(0,0))
 
                          if event.key == pygame.K_t:
->>>>>>> oops copied old files last time haha
 ##                             level_list = []
 ##                             level_list.append( Level_01(player) )
 ##                             level_list.append( Level_02(player) )
@@ -1140,55 +1079,11 @@ def main():
                                set_level = Level_02(player)
                            else:
                               set_level = Level_03(player)
-
-<<<<<<< HEAD
-                           
+      
                            player.level = current_level = level_list[current_level_no] = set_level
      
                            player.update()
                                
-                           
-
-                       if event.key == pygame.K_e:
-                           player.MORTAL = False;
-                           print("IMMORTAL")
-
-                       if event.key == pygame.K_r:
-                           player.MORTAL = True;
-                           print("MORTAL")
-
-                       
-                       if event.key == pygame.K_y:
-                           tick_speed += 1;
-                           
-                       if event.key == pygame.K_u:
-                       #width, height, x e y
-                       
-                          """
-                          for platform in level:
-                            block = Platform(platform[0], platform[1])
-                            block.rect.x = platform[2]
-                            block.rect.y = platform[3]
-                            block.player = self.player
-                            self.platform_list.add(block)
-                          """
-                          #global DIFFICULTY
-                            
-                          local_platform_list = player.level.platform_list
-                          player.level.platform_list = []
-                       
-                          for plat in local_platform_list:
-                            local_width = (int)(max(plat.width * DIFFICULTY, 10000))
-                            local_height = plat.height
-                            
-                            block = Platform(local_width, local_height)
-                            block.rect.x = plat.rect.x
-                            block.rect.y = plat.rect.y
-                            block.player = player
-                            player.level.platform_list.append(block)
-                              
-                              
-=======
                          if event.key == pygame.K_e:
                              player.MORTAL = False;
                              print("IMMORTAL")
@@ -1253,24 +1148,23 @@ def main():
                          if event.key == pygame.K_p:
                              MOOD = "NEUTRAL"   
                                 
->>>>>>> oops copied old files last time haha
 
-                       if event.key == pygame.K_a:
-                           print("q - increase DIFFICULTY")
-                           print("w - decrease DIFFICULTY")
-                           print("t - update levels")
-                           print("e - IMMORTAL")
-                           print("r - MORTAL")
-                           print("y - change speed")
+                         if event.key == pygame.K_a:
+                             print("q - increase DIFFICULTY")
+                             print("w - decrease DIFFICULTY")
+                             print("t - update levels")
+                             print("e - IMMORTAL")
+                             print("r - MORTAL")
+                             print("y - change speed")
                                  
 
-                   if event.type == pygame.KEYUP:
-                       if event.key == pygame.K_RIGHT and player.change_x > 0:
-                           player.go_right()
-                       if event.key == pygame.K_s and player.change_x >0:
-                           player.stop()                           
-                       if event.key == pygame.K_UP and player.change_x == 0:
-                           player.stop()
+                     if event.type == pygame.KEYUP:
+                         if event.key == pygame.K_RIGHT and player.change_x > 0:
+                             player.go_right()
+                         if event.key == pygame.K_s and player.change_x >0:
+                             player.stop()                           
+                         if event.key == pygame.K_UP and player.change_x == 0:
+                             player.stop()
 
 
                       
@@ -1433,14 +1327,7 @@ def main():
 
                  clock.tick(tick_speed * 30 % 180 + 30)
                  #cam_clock.tick(30)
-                 
-<<<<<<< HEAD
                  screen.blit(frame, (SCREEN_WIDTH - 144,SCREEN_HEIGHT - 120))
-=======
-                 #screen.blit(frame, (SCREEN_WIDTH - 144,SCREEN_HEIGHT - 120))
->>>>>>> oops copied old files last time haha
-                
-                
                 #UPDATE
                  pygame.display.flip()
 
