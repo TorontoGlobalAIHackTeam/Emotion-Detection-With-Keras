@@ -2,6 +2,7 @@ import pygame
 import cv2
 import numpy as np
 import os;
+import Facial_Recognition_py3 as fr
 from pygame.locals import *
 import random
 import sys
@@ -402,7 +403,7 @@ class Level_01(Level):
         Level.__init__(self, player)
         self.level_limit = -3000
         #CARICO LO SFONDO
-        self.background = pygame.image.load('assets/sprites/background_lvl_1_invert.png').convert()
+        self.background = pygame.image.load('assets/sprites/background_lvl_1.png').convert()
 
         # Array that passes class parameters width, height, x and y
         level = [[10, 600, -100, 0], #lato sinistro  
@@ -915,6 +916,7 @@ def main():
                    time_elapsed = 0
                    ret, frame = camera.read()
                    cv2.imwrite(OUTPUT_DIRECTORY + "\\face.jpg", frame)
+                   fr.cropPic(frame)
                    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                    frame = np.rot90(frame)
                    frame = pygame.surfarray.make_surface(frame)
