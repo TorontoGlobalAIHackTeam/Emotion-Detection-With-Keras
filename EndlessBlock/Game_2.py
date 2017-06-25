@@ -32,13 +32,23 @@ RED_HEARTH =(219,32,39)
 # Dimensione Schermo
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 576
-PLAYER_COLOR =(0,204,0)
+
+global P_R, P_B, P_G, PLAYER_COLOR
+
+P_R = 0
+P_G = 204
+P_B = 0
+
+PLAYER_COLOR = (P_R,P_G,P_B)
 
 full = (SCREEN_WIDTH,SCREEN_HEIGHT)
 
 global DIFFICULTY
 
 DIFFICULTY = 1.0;
+
+
+
 
 class Player(pygame.sprite.Sprite):
 
@@ -209,6 +219,9 @@ class Platform(pygame.sprite.Sprite):
         # -- tagged --
 
         global DIFFICULTY
+        
+        self.width = width
+        self.height = height
 
         width = min((int)(width * DIFFICULTY), 10000)
         
@@ -229,6 +242,9 @@ class obstacles_1(Platform):
 ##        global DIFFICULTY
 ##
 ##        width = (int)(width * DIFFICULTY)
+
+        self.width = width
+        self.height = height
         
         pygame.sprite.Sprite.__init__(self)
 
@@ -247,6 +263,9 @@ class obstacles_2(Platform):
 ##
 ##        width = (int)(width * DIFFICULTY)
 
+        self.width = width
+        self.height = height
+
         pygame.sprite.Sprite.__init__(self)
 
         self.image = pygame.image.load('assets/sprites/ostacolo_2.png').convert_alpha()
@@ -262,6 +281,9 @@ class obstacles_3(Platform):
 ##        global DIFFICULTY
 ##
 ##        width = (int)(width * DIFFICULTY)
+
+        self.width = width
+        self.height = height
 
         pygame.sprite.Sprite.__init__(self)
 
@@ -376,7 +398,7 @@ class Level_01(Level):
         Level.__init__(self, player)
         self.level_limit = -3000
         #CARICO LO SFONDO
-        self.background = pygame.image.load('assets/sprites/background_lvl_1.png').convert()
+        self.background = pygame.image.load('assets/sprites/background_lvl_1_invert.png').convert()
 
         # Array that passes class parameters width, height, x and y
         level = [[10, 600, -100, 0], #lato sinistro  
@@ -783,6 +805,11 @@ def main():
     state = 0
     prev_state = 1
     rect_list = []
+    
+    
+    BG_1 = pygame.image.load('assets/sprites/background_lvl_1.png').convert()
+    BG_1i = pygame.image.load('assets/sprites/background_lvl_1_invert.png').convert()
+
 
     while 1:
 
@@ -841,6 +868,9 @@ def main():
    
             #-------------------------------------------JOYPAD-----------------------------
              clock = pygame.time.Clock()
+             #cam_clock = pygame.time.Clock()
+             
+             
              done = False
              time_elapsed = 0
              
@@ -852,8 +882,43 @@ def main():
              frame = pygame.surfarray.make_surface(frame)
              
              while not done:
+             
+                 global P_R, P_B, P_G, PLAYER_COLOR
+
+                 PLAYER_COLOR = (P_R,P_G,P_B)
+                 player.image.fill(PLAYER_COLOR)
+             
+             
+                 if (P_R < 100):
+                  P_R += 1
+                 elif (P_G < 100):
+                  P_G += 1
+                 elif (P_B < 100):
+                  P_B += 1
+                 else:
+                  P_R -= 1
+                  P_G -= 1
+                  P_B -= 1
+                
+                 """
+                 if (P_R != 255):
+                  P_R += 1
+                 elif (P_G != 255):
+                  P_R -= 20
+                  P_G += 1
+                 elif (P_B != 255):
+                  P_R -= 40
+                  P_G -= 20
+                  P_B += 1
+                 else:
+                  P_R = P_G = P_B = 0
+                  """
+                 
+             
                  # Capture frame-by-frame
                  dt = clock.tick()
+                 
+                 
                  
                  time_elapsed += dt
                  if time_elapsed > 0.1:
@@ -937,7 +1002,14 @@ def main():
                          if event.key == pygame.K_w:
                              DIFFICULTY -= 0.1
                              print (DIFFICULTY)
+                         
+                         if event.key == pygame.K_c:
+                             player.level.background = BG_1 #pygame.image.load('assets/sprites/background_lvl_1.png').convert()
+                             screen.blit(player.level.background,(0,0))
                              
+                         if event.key == pygame.K_v:
+                             player.level.background = BG_1i #pygame.image.load('assets/sprites/background_lvl_1_invert.png').convert()
+                             screen.blit(player.level.background,(0,0))
 
                          if event.key == pygame.K_t:
 ##                             level_list = []
@@ -974,7 +1046,34 @@ def main():
                          
                          if event.key == pygame.K_y:
                              tick_speed += 1;
-                    
+                             
+                         if event.key == pygame.K_u:
+                         #width, height, x e y
+                         
+                            """
+                            for platform in level:
+                              block = Platform(platform[0], platform[1])
+                              block.rect.x = platform[2]
+                              block.rect.y = platform[3]
+                              block.player = self.player
+                              self.platform_list.add(block)
+                            """
+                            #global DIFFICULTY
+                              
+                            local_platform_list = player.level.platform_list
+                            player.level.platform_list = []
+                         
+                            for plat in local_platform_list:
+                              local_width = (int)(max(plat.width * DIFFICULTY, 10000))
+                              local_height = plat.height
+                              
+                              block = Platform(local_width, local_height)
+                              block.rect.x = plat.rect.x
+                              block.rect.y = plat.rect.y
+                              block.player = player
+                              player.level.platform_list.append(block)
+                                
+                                
 
                          if event.key == pygame.K_a:
                              print("q - increase DIFFICULTY")
@@ -1136,7 +1235,7 @@ def main():
                  text = font2.render("x", True,WHITE)
                  screen.blit(text,[485, 125])
 
-                 text = font2.render(str(player.life), True,RED_HEARTH)
+                 text = font2.render(str(player.life), True,WHITE)
                  screen.blit(text,[510, 130])
 
                  hearth = pygame.image.load('assets/sprites/hearth.png').convert_alpha()
@@ -1153,7 +1252,8 @@ def main():
                  ##tick_speed = 60 * DIFFICULTY
 
                  clock.tick(tick_speed * 30 % 180 + 30)
-
+                 #cam_clock.tick(30)
+                 
                  screen.blit(frame, (SCREEN_WIDTH - 144,SCREEN_HEIGHT - 120))
                 
                 
