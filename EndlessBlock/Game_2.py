@@ -1,4 +1,4 @@
-import pygame
+﻿import pygame
 import cv2
 import numpy as np
 import os;
@@ -9,10 +9,10 @@ import sys
 
 from menu import *
 pygame.init()
-camera = cv2.VideoCapture(0)
-pygame.display.set_caption("OpenCV camera stream on Pygame")
-camera.set(3,144)
-camera.set(4,144)
+##camera = cv2.VideoCapture(0)
+##pygame.display.set_caption("OpenCV camera stream on Pygame")
+##camera.set(3,144)
+##camera.set(4,144)
 
 CURR_PATH = os.path.dirname(os.path.realpath(__file__));
 OUTPUT_DIRECTORY = str(CURR_PATH) + "\\Input";
@@ -45,6 +45,15 @@ P_G = 204
 P_B = 0
 
 PLAYER_COLOR = (P_R,P_G,P_B)
+<<<<<<< HEAD
+=======
+
+global MOOD, COMP_COLOR
+
+MOOD = "ANGRY"
+
+COMP_COLOR = RED
+>>>>>>> oops copied old files last time haha
 
 full = (SCREEN_WIDTH,SCREEN_HEIGHT)
 
@@ -80,9 +89,11 @@ class Player(pygame.sprite.Sprite):
         self.total_points = 0
 
         ## Changed -- tagged --
-        self.life = 99999
+        self.life = 10
         self.mixer = pygame.mixer.pre_init(frequency=22050, size=-16, channels=2, buffer=4096)
         self.pick_coin = pygame.mixer.Sound('assets/audio/point.ogg')
+
+        self.die = pygame.mixer.Sound('assets/audio/hit.ogg')
 
     def update(self):
         #Aggiorno le variabili e muovo il player
@@ -109,7 +120,7 @@ class Player(pygame.sprite.Sprite):
         for block in block_hit_list:
             if self.change_x > 0:
                 self.rect.right = block.rect.left
-
+                self.die.play(maxtime =550,fade_ms = 0)
                 #se collido in X con gli obstacles game over
         #-----------------------GAME OVER---------------------#
 
@@ -406,7 +417,7 @@ class Level_01(Level):
         self.background = pygame.image.load('assets/sprites/background_lvl_1.png').convert()
 
         # Array that passes class parameters width, height, x and y
-        level = [[10, 600, -100, 0], #lato sinistro  
+        self.level = level = [[10, 600, -100, 0], #lato sinistro  
                 [2400, 1, 0, 400],#1
                 [300, 1, 500, 350],
                 [31, 2, 1500, 360],
@@ -526,7 +537,7 @@ class Level_02(Level):
 
 
         # Array che passa i parametri della classe width, height, x e y
-        level = [[10000, 0, -200, 550],#sotto
+        self.level = level = [[10000, 0, -200, 550],#sotto
                  [10, 600, -100, 0], #lato sinistro
 
 
@@ -627,7 +638,7 @@ class Level_03(Level):
         
 
          # Array che passa i parametri della classe width, height, x e y
-        level = [[10000, 0, -100, 550],#sotto
+        self.level = level = [[10000, 0, -100, 550],#sotto
                  [10, 600, -100, 0], #lato sinistro  
 
         #PIATTAFORME
@@ -880,12 +891,14 @@ def main():
              done = False
              time_elapsed = 0
              
-             ret, frame = camera.read()
-                   
-             #screen.fill([0,0,0])
-             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-             frame = np.rot90(frame)
-             frame = pygame.surfarray.make_surface(frame)
+##             ret, frame = camera.read()
+##                   
+##             #screen.fill([0,0,0])
+##             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+##             frame = np.rot90(frame)
+##             frame = pygame.surfarray.make_surface(frame)
+
+             
              
              
              while not done:
@@ -894,6 +907,7 @@ def main():
 
                  PLAYER_COLOR = (P_R,P_G,P_B)
                  player.image.fill(PLAYER_COLOR)
+<<<<<<< HEAD
              
              
                  if (P_R < 100):
@@ -934,6 +948,66 @@ def main():
                  for event in pygame.event.get():
                    if event.type == pygame.QUIT:
                        done = True                 
+=======
+
+                 global MOOD, COMP_COLOR
+                 
+
+                 if MOOD == "ANGRY":
+                     COMP_COLOR = RED
+                 elif MOOD == "SAD":
+                     COMP_COLOR = BLUE
+                 else:
+                     COMP_COLOR = GREEN
+
+                 if (PLAYER_COLOR[0] != COMP_COLOR[0]):
+                     if (P_R < COMP_COLOR[0]):
+                         P_R += 1
+                     else:
+                         P_R -= 1
+
+                 if (PLAYER_COLOR[1] != COMP_COLOR[1]):
+                     if (P_G < COMP_COLOR[1]):
+                         P_G += 1
+                     else:
+                         P_G -= 1
+                 
+                 if (PLAYER_COLOR[2] != COMP_COLOR[2]):
+                     if (P_B < COMP_COLOR[2]):
+                         P_B += 1
+                     else:
+                         P_B -= 1
+
+                
+             
+##                 # Capture frame-by-frame
+##                 dt = clock.tick()
+##                 
+##                 
+##                 
+##                 time_elapsed += dt
+##                 if time_elapsed > 0.1:
+##                   time_elapsed = 0
+##                   ret, frame = camera.read()
+##                   
+##                   #screen.fill([0,0,0])
+##                   frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+##                   frame = np.rot90(frame)
+##                   frame = pygame.surfarray.make_surface(frame)
+##                   #screen.blit(frame, (SCREEN_WIDTH - 144,SCREEN_HEIGHT - 144))
+##                   pygame.display.update()
+##
+##                    # Our operations on the frame come here
+##                    #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+##
+##                    # Display the resulting frame
+##                   #cv2.imshow('frame', frame)
+##                   if cv2.waitKey(1) & 0xFF == ord('q'):
+##                       break
+                 for event in pygame.event.get():
+                     if event.type == pygame.QUIT:
+                         done = True                 
+>>>>>>> oops copied old files last time haha
 
           #--------------------------------------------------JOYPAD---------------------------
 
@@ -976,6 +1050,7 @@ def main():
                       #    active_sprite_list.add(proiettili)
                       #    proiettili_lista.add(proiettili)
            
+<<<<<<< HEAD
           #-----------------------------------------------------KEYBOARD-----------------------         
             
                        if event.key == pygame.K_RIGHT:
@@ -1004,6 +1079,52 @@ def main():
                            screen.blit(player.level.background,(0,0))
 
                        if event.key == pygame.K_t:
+=======
+            #--------------------------------------------------JOYPAD---------------------------
+                     elif event.type == pygame.KEYDOWN:
+                         if event.key == pygame.K_0:
+                             screen = pygame.display.set_mode((full),pygame.FULLSCREEN)
+                         if event.key == pygame.K_1:
+                             screen = pygame.display.set_mode(size)
+                         if event.key == pygame.K_ESCAPE:
+                             main()
+
+                        #if event.key == pygame.K_SPACE:
+                        #    proiettili = Proiettili()
+                        #    proiettili.rect.x = player.rect.x 
+                        #    proiettili.rect.y = player.rect.y+10 
+                        #    active_sprite_list.add(proiettili)
+                        #    proiettili_lista.add(proiettili)
+             
+            #-----------------------------------------------------KEYBOARD-----------------------         
+              
+                         if event.key == pygame.K_RIGHT:
+                             player.go_right()                                     
+                         if event.key == pygame.K_UP:
+                             player.jump()
+
+                         global DIFFICULTY
+
+                        ## -- tagged --
+                         if event.key == pygame.K_q:
+                             DIFFICULTY += 0.1
+                             print (DIFFICULTY)
+
+
+                         if event.key == pygame.K_w:
+                             DIFFICULTY -= 0.1
+                             print (DIFFICULTY)
+                         
+                         if event.key == pygame.K_c:
+                             player.level.background = BG_1 #pygame.image.load('assets/sprites/background_lvl_1.png').convert()
+                             screen.blit(player.level.background,(0,0))
+                             
+                         if event.key == pygame.K_v:
+                             player.level.background = BG_1i #pygame.image.load('assets/sprites/background_lvl_1_invert.png').convert()
+                             screen.blit(player.level.background,(0,0))
+
+                         if event.key == pygame.K_t:
+>>>>>>> oops copied old files last time haha
 ##                             level_list = []
 ##                             level_list.append( Level_01(player) )
 ##                             level_list.append( Level_02(player) )
@@ -1020,6 +1141,7 @@ def main():
                            else:
                               set_level = Level_03(player)
 
+<<<<<<< HEAD
                            
                            player.level = current_level = level_list[current_level_no] = set_level
      
@@ -1066,6 +1188,72 @@ def main():
                             player.level.platform_list.append(block)
                               
                               
+=======
+                         if event.key == pygame.K_e:
+                             player.MORTAL = False;
+                             print("IMMORTAL")
+
+                         if event.key == pygame.K_r:
+                             player.MORTAL = True;
+                             print("MORTAL")
+
+                         
+                         if event.key == pygame.K_y:
+                             tick_speed += 1;
+                             
+                         if event.key == pygame.K_u:
+
+                            for qwe in range(3, len(player.level.level)):
+
+                              plat = player.level.level[qwe]
+
+                              if plat[0] < 400:
+
+                                  new_width = (int) (min (plat[0] * DIFFICULTY, plat[0] + 20))
+                              
+                                  block = Platform(new_width, plat[1])
+                                  block.rect.x = plat[2]
+                                  block.rect.y = plat[3]
+                                  block.player = player
+                                  
+                                  player.level.platform_list.add(block)
+
+
+                         if event.key == pygame.K_g:
+                             block = Platform(10000, 1)
+                             block.rect.x = 0
+                             block.rect.y = 350
+                             block.player = player
+                             
+                             player.level.platform_list.add(block)
+
+                         if event.key == pygame.K_j:
+                             block = Platform(60, 1)
+                             block.rect.x = player.rect.x + 70
+                             block.rect.y = player.rect.y + 30
+                             block.player = player
+                             
+                             player.level.platform_list.add(block)
+
+                         if event.key == pygame.K_k:
+                             block = obstacles_1(30,30)
+                             block.rect.x = player.rect.x + 100
+                             block.rect.y = player.rect.y 
+                             block.player = player
+                             player.level.platform_list.add(block)
+                             player.level.obstacles_list.add(block)
+
+
+                         if event.key == pygame.K_i:
+                             MOOD = "ANGRY"
+
+                         if event.key == pygame.K_o:
+                             MOOD = "SAD"
+
+                         if event.key == pygame.K_p:
+                             MOOD = "NEUTRAL"   
+                                
+>>>>>>> oops copied old files last time haha
 
                        if event.key == pygame.K_a:
                            print("q - increase DIFFICULTY")
@@ -1246,7 +1434,11 @@ def main():
                  clock.tick(tick_speed * 30 % 180 + 30)
                  #cam_clock.tick(30)
                  
+<<<<<<< HEAD
                  screen.blit(frame, (SCREEN_WIDTH - 144,SCREEN_HEIGHT - 120))
+=======
+                 #screen.blit(frame, (SCREEN_WIDTH - 144,SCREEN_HEIGHT - 120))
+>>>>>>> oops copied old files last time haha
                 
                 
                 #UPDATE
