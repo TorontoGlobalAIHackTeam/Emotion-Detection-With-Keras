@@ -1,8 +1,8 @@
 ﻿import pygame
 import cv2
 import numpy as np
-import os;
-import Facial_Recognition_py3 as fr
+import os
+import Face_to_array as fr
 from pygame.locals import *
 import random
 import sys
@@ -11,11 +11,11 @@ from menu import *
 pygame.init()
 camera = cv2.VideoCapture(0)
 pygame.display.set_caption("OpenCV camera stream on Pygame")
-camera.set(3,144)
-camera.set(4,144)
+camera.set(3,200)
+camera.set(4,200)
 
 CURR_PATH = os.path.dirname(os.path.realpath(__file__));
-OUTPUT_DIRECTORY = str(CURR_PATH) + "\\Input";
+OUTPUT_DIRECTORY = str(CURR_PATH) + "/Input";
 
 #costanti globali
 
@@ -86,14 +86,14 @@ class Player(pygame.sprite.Sprite):
 
         # Riferimento rect
         self.rect = self.image.get_rect()
-        
+
         # Vel. player
         self.change_x = 0
         self.change_y = 0
 
         # Lista variabili
         self.level = None
-        
+
         self.attempt = 1
         self.total_points = 0
 
@@ -142,7 +142,7 @@ class Player(pygame.sprite.Sprite):
                         self.life += 1
                         self.rect.x = -5
                         self.rect.y = 550
-                            
+
         #-----------------------GAME OVER---------------------#
 
         #Muovo su e giu
@@ -170,12 +170,12 @@ class Player(pygame.sprite.Sprite):
 
             if self.change_y < 0:
                 self.rect.bottom = block.rect.top
-                    
+
             # Movimento Veritcale a 0
             self.change_y = 0
         #-------------------------------------------------------------SE SCONTRO CON I BLOCCHI points--------------------------
-    
-     
+
+
 
     def calc_grav(self):
         #def gravità
@@ -184,7 +184,7 @@ class Player(pygame.sprite.Sprite):
             self.change_y = 1
         else:
             self.change_y += .55
-            
+
 
         # Pav
         if self.rect.y >= SCREEN_HEIGHT - self.rect.height and self.change_y >= 0:
@@ -193,8 +193,8 @@ class Player(pygame.sprite.Sprite):
 
     def jump(self):
         # Definition jumping
-        
-        self.rect.y += 3      
+
+        self.rect.y += 3
         platform_hit_list = pygame.sprite.spritecollide(self, self.level.platform_list, False)
         self.rect.y -= 3
 
@@ -203,26 +203,26 @@ class Player(pygame.sprite.Sprite):
             if self.change_y < 0:
                 self.rect.bottom = platform.rect.top
                 print("top it")
-        
+
     ## -- tagged --
-       
+
         # If I jump and collide with the platform shut down the player
         if self.rect.bottom >= SCREEN_HEIGHT or (len(platform_hit_list) > 0):
             self.change_y = -9
-            
+
 
     # Movimento left, right , stop
     def go_left(self):
         self.change_x = -5
-       
+
 
     def go_right(self):
         global DIFFICULTY
         self.change_x = 5  #* DIFFICULTY
-        
+
     def stop(self):
         self.change_x = 0
-        
+
 
 
 #class Proiettili(pygame.sprite.Sprite):
@@ -233,26 +233,26 @@ class Player(pygame.sprite.Sprite):
 #        self.image.fill(BLACK)
 #        self.rect = self.image.get_rect()
 
-#    def update(self):       
+#    def update(self):
 #        self.rect.x += 10
-        
+
 
 class Platform(pygame.sprite.Sprite):
-    
+
     def __init__(self, width, height):
 
         # -- tagged --
 
         global DIFFICULTY
-        
+
         self.width = width
         self.height = height
 
         width = min((int)(width * DIFFICULTY), 10000)
-        
+
         pygame.sprite.Sprite.__init__(self)
-        
-        
+
+
         self.image = pygame.Surface([width, height])
         self.image.fill(WHITE)
 
@@ -270,7 +270,7 @@ class obstacles_1(Platform):
 
         self.width = width
         self.height = height
-        
+
         pygame.sprite.Sprite.__init__(self)
 
         self.image = pygame.image.load('assets/sprites/ostacolo_1.png').convert_alpha()
@@ -314,17 +314,17 @@ class obstacles_3(Platform):
 
         self.image = pygame.image.load('assets/sprites/ostacolo_3.png').convert_alpha()
         self.image = pygame.transform.smoothscale(self.image, (width, height))
-        self.rect = self.image.get_rect()    
+        self.rect = self.image.get_rect()
 
 class points_1(Platform):
- 
-    
+
+
     def __init__(self,x,y):
 
         pygame.sprite.Sprite.__init__(self)
 
-        self.image = pygame.image.load('assets/sprites/gemma1.png')         
-        self.image = pygame.transform.smoothscale(self.image, (31, 28))   
+        self.image = pygame.image.load('assets/sprites/gemma1.png')
+        self.image = pygame.transform.smoothscale(self.image, (31, 28))
         self.rect = self.image.get_rect()
 
         self.rect.x = x
@@ -333,35 +333,35 @@ class points_1(Platform):
     def update(self):
         pass
 
-class points_2(Platform):   
+class points_2(Platform):
     def __init__(self,x,y):
 
         pygame.sprite.Sprite.__init__(self)
 
-        self.image = pygame.image.load('assets/sprites/gemma2.png')         
-        self.image = pygame.transform.smoothscale(self.image, (31, 28))   
+        self.image = pygame.image.load('assets/sprites/gemma2.png')
+        self.image = pygame.transform.smoothscale(self.image, (31, 28))
         self.rect = self.image.get_rect()
 
         self.rect.x = x
         self.rect.y = y
 
     def update(self):
-        pass 
+        pass
 
-class points_3(Platform):   
+class points_3(Platform):
     def __init__(self,x,y):
 
         pygame.sprite.Sprite.__init__(self)
 
-        self.image = pygame.image.load('assets/sprites/gemma3.png')         
-        self.image = pygame.transform.smoothscale(self.image, (31, 28))   
+        self.image = pygame.image.load('assets/sprites/gemma3.png')
+        self.image = pygame.transform.smoothscale(self.image, (31, 28))
         self.rect = self.image.get_rect()
 
         self.rect.x = x
         self.rect.y = y
 
     def update(self):
-        pass        
+        pass
 
 class Level(object):
     #Super class che controlla i livelli
@@ -375,29 +375,29 @@ class Level(object):
         self.coin_list = pygame.sprite.Group()
         self.obstacles_list = pygame.sprite.Group()
 
-        # Background   
+        # Background
         self.background = None
         self.world_shift = 0
         self.level_limit = -1000
 
-        
-        
+
+
         #POSIZIONE PLAYER--------------------------
         self.player.rect.x = 50
         self.player.rect.y =  400 - self.player.rect.height
-        
+
 
     # Update livelli
     def update(self):
         self.platform_list.update()
 
     def draw(self, screen):
-        #Disegno su schermo 
+        #Disegno su schermo
 
         # background
         screen.fill(BACKGROUND)
         screen.blit(self.background,(self.world_shift // 3,0))
-        
+
         # Tutti gli sprite delle liste plat e coin
         self.platform_list.draw(screen)
         self.coin_list.draw(screen)
@@ -414,7 +414,7 @@ class Level(object):
         for coin in self.coin_list:
             coin.rect.x += shift_x
 
-# Classi figlie di "level" 
+# Classi figlie di "level"
 class Level_01(Level):
 
     def __init__(self, player):
@@ -426,7 +426,7 @@ class Level_01(Level):
         self.background = pygame.image.load('assets/sprites/background_lvl_1.png').convert()
 
         # Array that passes class parameters width, height, x and y
-        self.level = level = [[10, 600, -100, 0], #lato sinistro  
+        self.level = level = [[10, 600, -100, 0], #lato sinistro
                 [2400, 1, 0, 400],#1
                 [300, 1, 500, 350],
                 [31, 2, 1500, 360],
@@ -434,7 +434,7 @@ class Level_01(Level):
                 [31, 2, 1850, 330],
                 [31, 2, 2040, 330],
 
-                ## -- tagged -- 
+                ## -- tagged --
                 #[10000, 1, 0, 350],
 
 
@@ -457,10 +457,10 @@ class Level_01(Level):
                  ]
 
 
-        obstacles = [[30, 30 , 450, 370],                   
+        obstacles = [[30, 30 , 450, 370],
                     [30, 30, 550, 370],
                     [30, 30, 650, 320],#sopra
-                    [30, 30, 750,370],                   
+                    [30, 30, 750,370],
                     [30, 30, 850, 370],
                     [30, 30, 1450, 370],
                     [30, 30, 1550, 370],
@@ -475,15 +475,15 @@ class Level_01(Level):
                     [30, 30, 1750, 300],
                     [30, 30, 1960, 300],
                     [30, 30, 2140, 300],
-                    
-                    
+
+
                     #MOD. LVL 1 obstacles
-                    
+
                     [30, 30, 2355, 300],
                     [30, 30, 2505, 270],
-                    [30, 30, 2655, 240],  
+                    [30, 30, 2655, 240],
                     [30, 30, 2890, 280]
-                              
+
                     ]
 
 
@@ -511,7 +511,7 @@ class Level_01(Level):
             block.rect.y = coin[3]
             block.player = self.player
             self.coin_list.add(block)
-            
+
 
         # ciclo for che grabba i dati dall'array
         for platform in level:
@@ -550,19 +550,19 @@ class Level_02(Level):
                  [10, 600, -100, 0], #lato sinistro
 
 
-                ## -- tagged -- 
+                ## -- tagged --
                 #[10000, 1, 0, 350],
-                 
+
 
         #PIATTAFORME
-                 [400, 1.5, 50, 420],#1                 
+                 [400, 1.5, 50, 420],#1
                  [110, 1.5, 520, 350],#2
                  [110, 1.5, 650, 280],
                  [350, 1.5, 790, 210],
 
                  #scalinata scesa
-                 
-     
+
+
                  [30, 30, 1200, 250],
                  [30, 30, 1310, 300],
                  [30, 30, 1420, 350],
@@ -571,7 +571,7 @@ class Level_02(Level):
                  [30, 30, 1850, 500],
 
                  #scalinata salita
-                
+
                  [70, 2, 1940, 450],
                  [70, 2, 2090, 400],
                  [400, 2, 2250, 350],
@@ -581,13 +581,13 @@ class Level_02(Level):
                  [60, 2, 2800, 370],
                  [60, 2, 3000, 370],
                  [60, 2, 3200, 370],
-                 [1000, 2, 3350, 300]]  
+                 [1000, 2, 3350, 300]]
 
 
         obstacles = [[30,30, 850,180],
                     [30,30, 1050,180],
                     [30,30, 2350,320],
-                    [30,30, 2500, 320],                  
+                    [30,30, 2500, 320],
                     [30,30, 3400, 270]
                     ]
 
@@ -604,7 +604,7 @@ class Level_02(Level):
                  [30, 30, 2915, 270],
                  [30, 30, 3115, 270],
                  [30, 30, 3350, 260]
-                 
+
                  ]
 
 
@@ -614,9 +614,9 @@ class Level_02(Level):
             block.rect.x = coin[2]
             block.rect.y = coin[3]
             block.player = self.player
-            self.coin_list.add(block) 
-             
-             
+            self.coin_list.add(block)
+
+
         #For che grabba i dati dall'array
         for platform in level:
             block = Platform(platform[0], platform[1])
@@ -644,14 +644,14 @@ class Level_03(Level):
         Level.__init__(self, player)
         self.level_limit = -3000
         self.background = pygame.image.load('assets/sprites/background_lvl_3.png').convert()
-        
+
 
          # Array che passa i parametri della classe width, height, x e y
         self.level = level = [[10000, 0, -100, 550],#sotto
-                 [10, 600, -100, 0], #lato sinistro  
+                 [10, 600, -100, 0], #lato sinistro
 
         #PIATTAFORME
-                 [320,1, -10, 420],#1                 
+                 [320,1, -10, 420],#1
                  [50, 1, 450, 400],#2
                  [50, 1, 650, 400],
                  [50, 1, 850, 400],
@@ -667,7 +667,7 @@ class Level_03(Level):
                  [140, 1, 1730, 500],
 
                  #scalinata salita
-                
+
                  [50, 20, 1940, 460],
                  [50, 20, 2090, 410],
                  [400, 1, 2250, 360],
@@ -681,7 +681,7 @@ class Level_03(Level):
                  [50, 20, 3110, 440],
 
                  [50, 1, 3240, 370],
-                 [500, 1, 3370, 340]]  
+                 [500, 1, 3370, 340]]
 
 
         obstacles = [[30,30, 560,370],
@@ -689,7 +689,7 @@ class Level_03(Level):
                     [30,30, 960,360],
                     [30,30, 1210, 340],
 
-                    [20,20, 1740, 420],  
+                    [20,20, 1740, 420],
                     [20,20, 1770, 420],
                     [20,20, 1800, 420],
                     [20,20, 1830, 420],
@@ -697,7 +697,7 @@ class Level_03(Level):
                     [30,30, 2300, 330],
                     [30,30, 2600, 330],
                     [30,30, 2920, 350],
-                    [30,30, 3130, 340],           
+                    [30,30, 3130, 340],
                     [30,30, 3480, 310]
                     ]
 
@@ -708,14 +708,14 @@ class Level_03(Level):
 
                     [30,30, 1550, 370],
 
-                    [20,20, 1750, 470], 
+                    [20,20, 1750, 470],
                     [20,20, 1820, 470],
 
                     [30,30, 2400, 330],
                     [30,30, 2500, 330],
 
                     [30,30, 2920, 410],
-                    [30,30, 3130, 410],           
+                    [30,30, 3130, 410],
                     [30,30, 3420, 310]
                     ]
 
@@ -727,7 +727,7 @@ class Level_03(Level):
             block.rect.x = coin[2]
             block.rect.y = coin[3]
             block.player = self.player
-            self.coin_list.add(block) 
+            self.coin_list.add(block)
 
 
          # ciclo for che grabba i dati dall'array
@@ -759,7 +759,7 @@ def game_over():
     screen.blit(background_menu,(0,0))
 
     player = Player()
-    font3 = pygame.font.Font('KGPrimaryWhimsy.ttf',30)                        
+    font3 = pygame.font.Font('KGPrimaryWhimsy.ttf',30)
     text = font3.render("  Lifes Used "+str(player.life), True, WHITE)
     screen.blit(text, [420, 415])
 
@@ -772,18 +772,18 @@ def game_over():
                 ('EXIT',2, None)])
 
     menu.set_center(True, True)
-    
+
     menu.set_alignment('center', 'center')
     state = 0
     prev_state = 1
     rect_list = []
 
     while 1:
-  
+
         if prev_state != state:
             pygame.event.post(pygame.event.Event(EVENT_CHANGE_STATE, key = 0))
             prev_state = state
-         
+
         e = pygame.event.wait()
 
         if e.type == pygame.KEYDOWN or e.type == EVENT_CHANGE_STATE:
@@ -808,7 +808,7 @@ def game_over():
 
 
 def main():
-    
+
     size = [SCREEN_WIDTH, SCREEN_HEIGHT]
     screen = pygame.display.set_mode((size),pygame.DOUBLEBUF | pygame.HWSURFACE )
     pygame.display.set_caption("Endless - Block")
@@ -825,13 +825,13 @@ def main():
                 ('QUIT',3, None),])
 
     menu.set_center(True, True)
-    
+
     menu.set_alignment('center', 'center')
     state = 0
     prev_state = 1
     rect_list = []
-    
-    
+
+
     BG_1 = pygame.image.load('assets/sprites/background_lvl_1.png').convert()
     BG_1i = pygame.image.load('assets/sprites/background_lvl_1_invert.png').convert()
 
@@ -841,31 +841,31 @@ def main():
       if prev_state != state:
          pygame.event.post(pygame.event.Event(EVENT_CHANGE_STATE, key = 0))
          prev_state = state
-         
+
       e = pygame.event.wait()
 
       if e.type == pygame.KEYDOWN or e.type == EVENT_CHANGE_STATE:
          if state == 0:
             rect_list, state = menu.update(e, state)
          elif state == 1:
-      
+
              #-----------------------------------------------------------------------LOOP GAME------------------------------------------------------
 
              size = [SCREEN_WIDTH, SCREEN_HEIGHT]
              screen = pygame.display.set_mode((size),pygame.DOUBLEBUF | pygame.HWSURFACE )
- 
+
              pygame.display.set_caption("Endless - Block")
              attempt = 1
 
              joysticks = []
-              
+
             # Creo il player
              player = Player()
 
              #Carico le font
              font1 = pygame.font.Font('KGPrimaryWhimsy.ttf', 30)
              font2 = pygame.font.Font('KGPrimaryWhimsy.ttf', 40)
-             
+
 
             #Creo i livelli
              level_list = []
@@ -880,7 +880,7 @@ def main():
              player.level = current_level
              active_sprite_list.add(player)
 
-             
+
 
                 #-------------------------------------------JOYPAD-----------------------------
              joystick_count = pygame.joystick.get_count()
@@ -890,32 +890,32 @@ def main():
              else:
                  my_joystick = pygame.joystick.Joystick(0)
                  my_joystick.init()
-   
+
             #-------------------------------------------JOYPAD-----------------------------
              global OUTPUT_DIRECTORY
              clock = pygame.time.Clock()
              #cam_clock = pygame.time.Clock()
-             
-             
+
+
              done = False
              time_elapsed = 0
-             
+
              ret, frame = camera.read()
-                   
+
              #screen.fill([0,0,0])
              frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
              frame = np.rot90(frame)
              frame = pygame.surfarray.make_surface(frame)
 
-             
-             
+
+
              while not done:
-             
+
                  global P_R, P_B, P_G, PLAYER_COLOR
 
                  PLAYER_COLOR = (P_R,P_G,P_B)
                  player.image.fill(PLAYER_COLOR)
-   
+
                  if (P_R < 100):
                   P_R += 1
                  elif (P_G < 100):
@@ -925,18 +925,34 @@ def main():
                  else:
                   P_R -= 1
                   P_G -= 1
-                  P_B -= 1 
-                  
+                  P_B -= 1
+
                  global OUTPUT_DIRECTORY
                  # Capture frame-by-frame
                  dt = clock.tick()
-                 
+
                  time_elapsed += dt
-                 if time_elapsed > 30:
+                 if time_elapsed > 1000:
                    time_elapsed = 0
                    ret, frame = camera.read()
-                   cv2.imwrite(OUTPUT_DIRECTORY + "\\face.jpg", frame)
-                   fr.cropPic(frame)
+                   cv2.imwrite(OUTPUT_DIRECTORY + "/face.jpg", frame)
+                   local_result = fr.main()
+
+                   if (local_result == "Angry" or local_result == "Fear"):
+                       MOOD = "ANGRY"
+
+                       if (player.level.background != BG_1i):
+                           player.level.background = BG_1i #pygame.image.load('assets/sprites/background_lvl_1_invert.png').convert()
+                           screen.blit(player.level.background,(0,0))
+                   elif (local_result == "Happy" or local_result == "Surprise"):
+                       MOOD = "HAPPY"
+
+                       if (player.level.background != BG_1):
+                           player.level.background = BG_1 #pygame.image.load('assets/sprites/background_lvl_1_invert.png').convert()
+                           screen.blit(player.level.background,(0,0))
+                   else:
+                       MOOD = "NEUTRAL"
+
                    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                    frame = np.rot90(frame)
                    frame = pygame.surfarray.make_surface(frame)
@@ -947,13 +963,13 @@ def main():
                     #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
                     # Display the resulting frame
-                   #cv2.imshow('frame', frame)    cv2.imwrite(output_directory + "\\face_" + str(i) + ".jpg", all_faces[i]);
+                   #cv2.imshow('frame', frame)    cv2.imwrite(output_directory + "/face_" + str(i) + ".jpg", all_faces[i]);
 
                    if cv2.waitKey(1) & 0xFF == ord('q'):
                        break
-                       
+
                  global MOOD, COMP_COLOR
-                 
+
 
                  if MOOD == "ANGRY":
                      COMP_COLOR = RED
@@ -973,25 +989,25 @@ def main():
                          P_G += 1
                      else:
                          P_G -= 1
-                 
+
                  if (PLAYER_COLOR[2] != COMP_COLOR[2]):
                      if (P_B < COMP_COLOR[2]):
                          P_B += 1
                      else:
                          P_B -= 1
 
-                
-             
+
+
 ##                 # Capture frame-by-frame
 ##                 dt = clock.tick()
-##                 
-##                 
-##                 
+##
+##
+##
 ##                 time_elapsed += dt
 ##                 if time_elapsed > 0.1:
 ##                   time_elapsed = 0
 ##                   ret, frame = camera.read()
-##                   
+##
 ##                   #screen.fill([0,0,0])
 ##                   frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 ##                   frame = np.rot90(frame)
@@ -1008,7 +1024,7 @@ def main():
 ##                       break
                  for event in pygame.event.get():
                      if event.type == pygame.QUIT:
-                         done = True                 
+                         done = True
 
           #--------------------------------------------------JOYPAD---------------------------
 
@@ -1024,9 +1040,9 @@ def main():
                      elif event.type == pygame.JOYBUTTONUP:
                            nome = 'joystick%d-pulsante%d-su' % (event.joy, event.button)
                            print(nome)
-                  
 
-                     elif event.type == pygame.JOYHATMOTION:                
+
+                     elif event.type == pygame.JOYHATMOTION:
                        nome = 'joystick%d-axis%d' % (event.joy, event.hat)
                        print (nome, event.value)
                        if event.hat == 0:
@@ -1034,7 +1050,7 @@ def main():
                        else:
                            player.stop()
 
-    
+
             #--------------------------------------------------JOYPAD---------------------------
                      elif event.type == pygame.KEYDOWN:
                          if event.key == pygame.K_0:
@@ -1046,15 +1062,15 @@ def main():
 
                         #if event.key == pygame.K_SPACE:
                         #    proiettili = Proiettili()
-                        #    proiettili.rect.x = player.rect.x 
-                        #    proiettili.rect.y = player.rect.y+10 
+                        #    proiettili.rect.x = player.rect.x
+                        #    proiettili.rect.y = player.rect.y+10
                         #    active_sprite_list.add(proiettili)
                         #    proiettili_lista.add(proiettili)
-             
-            #-----------------------------------------------------KEYBOARD-----------------------         
-              
+
+            #-----------------------------------------------------KEYBOARD-----------------------
+
                          if event.key == pygame.K_RIGHT:
-                             player.go_right()                                     
+                             player.go_right()
                          if event.key == pygame.K_UP:
                              player.jump()
 
@@ -1069,11 +1085,11 @@ def main():
                          if event.key == pygame.K_w:
                              DIFFICULTY -= 0.1
                              print (DIFFICULTY)
-                         
+
                          if event.key == pygame.K_c:
                              player.level.background = BG_1 #pygame.image.load('assets/sprites/background_lvl_1.png').convert()
                              screen.blit(player.level.background,(0,0))
-                             
+
                          if event.key == pygame.K_v:
                              player.level.background = BG_1i #pygame.image.load('assets/sprites/background_lvl_1_invert.png').convert()
                              screen.blit(player.level.background,(0,0))
@@ -1094,11 +1110,11 @@ def main():
                                set_level = Level_02(player)
                            else:
                               set_level = Level_03(player)
-      
+
                            player.level = current_level = level_list[current_level_no] = set_level
-     
+
                            player.update()
-                               
+
                          if event.key == pygame.K_e:
                              player.MORTAL = False;
                              print("IMMORTAL")
@@ -1107,10 +1123,10 @@ def main():
                              player.MORTAL = True;
                              print("MORTAL")
 
-                         
+
                          if event.key == pygame.K_y:
                              tick_speed += 1;
-                             
+
                          if event.key == pygame.K_u:
 
                             for qwe in range(3, len(player.level.level)):
@@ -1120,12 +1136,12 @@ def main():
                               if plat[0] < 400:
 
                                   new_width = (int) (min (plat[0] * DIFFICULTY, plat[0] + 20))
-                              
+
                                   block = Platform(new_width, plat[1])
                                   block.rect.x = plat[2]
                                   block.rect.y = plat[3]
                                   block.player = player
-                                  
+
                                   player.level.platform_list.add(block)
 
 
@@ -1134,21 +1150,21 @@ def main():
                              block.rect.x = 0
                              block.rect.y = 350
                              block.player = player
-                             
+
                              player.level.platform_list.add(block)
 
                          if event.key == pygame.K_j:
-                             block = Platform(60, 1)
-                             block.rect.x = player.rect.x + 70
-                             block.rect.y = player.rect.y + 30
+                             block = Platform(90, 2)
+                             block.rect.x = player.rect.x + 90
+                             block.rect.y = player.rect.y + 20
                              block.player = player
-                             
+
                              player.level.platform_list.add(block)
 
                          if event.key == pygame.K_k:
                              block = obstacles_1(30,30)
                              block.rect.x = player.rect.x + 100
-                             block.rect.y = player.rect.y 
+                             block.rect.y = player.rect.y
                              block.player = player
                              player.level.platform_list.add(block)
                              player.level.obstacles_list.add(block)
@@ -1161,8 +1177,8 @@ def main():
                              MOOD = "SAD"
 
                          if event.key == pygame.K_p:
-                             MOOD = "NEUTRAL"   
-                                
+                             MOOD = "NEUTRAL"
+
 
                          if event.key == pygame.K_a:
                              print("q - increase DIFFICULTY")
@@ -1171,23 +1187,23 @@ def main():
                              print("e - IMMORTAL")
                              print("r - MORTAL")
                              print("y - change speed")
-                                 
+
 
                      if event.type == pygame.KEYUP:
                          if event.key == pygame.K_RIGHT and player.change_x > 0:
                              player.go_right()
                          if event.key == pygame.K_s and player.change_x >0:
-                             player.stop()                           
+                             player.stop()
                          if event.key == pygame.K_UP and player.change_x == 0:
                              player.stop()
 
 
-                      
-            #-----------------------------------------------------TASTIERA-----------------------         
-  
+
+            #-----------------------------------------------------TASTIERA-----------------------
+
                 # Update the Player
                  active_sprite_list.update()
-        
+
                 # Update Objects
                  current_level.update()
 
@@ -1203,7 +1219,7 @@ def main():
                      diff = level_durtion - player.rect.x
                      player.rect.x = 50
                      current_level.shift_world(diff)
- 
+
                      #If the player reaches the end of the level and limit, load the second level, stop
                  current_position = player.rect.x + current_level.world_shift
                  if current_position < current_level.level_limit:
@@ -1213,7 +1229,7 @@ def main():
                          current_level = level_list[current_level_no]
                          player.level = current_level
                          player.stop()
-                         
+
                          #se i livelli finiscono carica menu "END"
                      else:
                          size = [SCREEN_WIDTH, SCREEN_HEIGHT]
@@ -1221,11 +1237,11 @@ def main():
                          pygame.display.set_caption("Impossible Py-Block")
 
                          background_menu = pygame.image.load('assets/sprites/Game_results.png').convert()
-                         
+
                          screen.blit(background_menu,(0,0))
-                         
+
                          font3 = pygame.font.Font('KGPrimaryWhimsy.ttf',30)
-                         
+
                          text = font3.render("  Diamonds collected "+str(player.total_points), True, WHITE)
                          screen.blit(text, [380, 390])
 
@@ -1241,7 +1257,7 @@ def main():
                                     ('EXIT',2, None)])
 
                          menu.set_center(True, True)
-    
+
                          menu.set_alignment('center', 'center')
                          state = 0
                          prev_state = 1
@@ -1252,7 +1268,7 @@ def main():
                              if prev_state != state:
                                  pygame.event.post(pygame.event.Event(EVENT_CHANGE_STATE, key = 0))
                                  prev_state = state
- 
+
                              e = pygame.event.wait()
 
                              if e.type == pygame.KEYDOWN or e.type == EVENT_CHANGE_STATE:
@@ -1271,16 +1287,16 @@ def main():
                                      pygame.quit()
                                      sys.exit()
 
-     
+
                                  pygame.display.update(rect_list)
 
-                
+
                  level_durtion =  -current_position + player.rect.x
-        
-        
-        
+
+
+
                 #-----------------------GAME OVER---------------------#
-                 
+
                  current_pos_player = player.rect.y
                  if current_pos_player > 480:
                      player.rect.x = -level_durtion  - current_level.world_shift
@@ -1290,18 +1306,18 @@ def main():
                      player.stop()
                      attempt +=1
                      player.life -= 1
-                     
 
-                  
+
+
 
 
                 #AGGIORNO LE LISTE E DISEGNO
                  current_level.draw(screen)
                  active_sprite_list.draw(screen)
                  total_attempt =attempt
-                 
 
-        
+
+
 
                 #OGGETTI TESTO
                 #--------------------PUNTEGGIO - lvl - ATTEMPT------------------------------------------
@@ -1328,11 +1344,11 @@ def main():
                  screen.blit(text,[510, 130])
 
                  hearth = pygame.image.load('assets/sprites/hearth.png').convert_alpha()
-                 hearth = pygame.transform.smoothscale(hearth, (45, 35)) 
-                
+                 hearth = pygame.transform.smoothscale(hearth, (45, 35))
+
                  screen.blit(hearth,(430,130))
                 #--------------------PUNTEGGIO - lvl - ATTEMPT------------------------------------------
-      
+
 
                  # 60 frame
                  ##global DIFFICULTY
@@ -1340,9 +1356,10 @@ def main():
 
                  ##tick_speed = 60 * DIFFICULTY
 
-                 clock.tick(tick_speed * 30 % 180 + 30)
+                 #clock.tick(tick_speed * 30 % 360 + 30)
+                 clock.tick(500)
                  #cam_clock.tick(30)
-                 screen.blit(frame, (SCREEN_WIDTH - 144,SCREEN_HEIGHT - 120))
+                 screen.blit(frame, (SCREEN_WIDTH - 200,SCREEN_HEIGHT - 180))
 
                 #UPDATE
                  pygame.display.flip()
@@ -1363,7 +1380,7 @@ def main():
                                     ('EXIT',2, None)])
 
              menu.set_center(True, True)
-    
+
              menu.set_alignment('center', 'center')
              state = 0
              prev_state = 1
@@ -1410,4 +1427,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-   

@@ -39,4 +39,5 @@ def emotion(arr):
         if (arr[i] > highest_num):
             index = i
             highest_num = arr[i]
+    print(arr)
     return emotion_arr[i]

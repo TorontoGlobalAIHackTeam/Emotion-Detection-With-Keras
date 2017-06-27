@@ -2,17 +2,18 @@ import cv2;
 import numpy as np;
 import os;
 from pathlib import Path
+import emotion_prediction as e_p
 
 curr_path = os.path.dirname(os.path.realpath(__file__));
 
-output_directory = str(curr_path) + "\\Output";
+output_directory = str(curr_path) + "/Output";
 
 faceGlobal = [];
 
 def cropPic(image):
   #hardcoded cascPath
-  #cascPath = "C:\\Users\\Owner\\Desktop\\AI Hackathon\\Haar_Cascades\\haarcascade_frontalface_default.xml"
-  cascPath = str(curr_path) + "\\Haar_Cascades\\haarcascade_frontalface_default.xml"
+  #cascPath = "C:/Users/Owner/Desktop/AI Hackathon/Haar_Cascades/haarcascade_frontalface_default.xml"
+  cascPath = str(curr_path) + "/Haar_Cascades/haarcascade_frontalface_default.xml"
 
   #create haar cascade
   faceCascade = cv2.CascadeClassifier(cascPath);
@@ -30,7 +31,7 @@ def cropPic(image):
       flags = cv2.COLOR_BGR2HSV
   );
 
-  print ("Found the face");
+  #print ("Found the face");
 
   count = 0;
 
@@ -40,14 +41,14 @@ def cropPic(image):
       h = max(w,h);
 
       count += 1;
-      
+
       cv2.rectangle(gray, (x, y), (x + w, y + h), (255, 255, 255), 2);
       blank_image = np.zeros((h, w, 3), np.uint8);
 
       for i in range(0, w):
           for j in range(0, h):
               blank_image[j][i] = gray[y + j][x + i];
-              
+
       face_resize = cv2.resize(blank_image, (48, 48), 3);
 
       faceGlobal.append(face_resize);
@@ -57,30 +58,81 @@ def cropPic(image):
   colour_list = [];
 
   out_arr = []
-  
-  output_file = open(output_directory + "\\output_file.txt", "w");
-  for i in range (0, len(faceGlobal)):
-    file_string = "[";
 
-    for j in range(0, 48):
-          file_string += "[";
-          for k in range(0, 48):
-              file_string += str(faceGlobal[i][j][k][0]);
-               
-              if (k != 47):
-                file_string += ","
-          file_string += "],";
+  # output_file = open(output_directory + "/output_file.txt", "w");
+  # file_string = "[";
+  # for i in range (0, len(faceGlobal)):
+  #
+  #
+  #   for j in range(0, 48):
+  #         file_string += "[";
+  #         for k in range(0, 48):
+  #             file_string += str(faceGlobal[i][j][k][0]);
+  #
+  #             if (k != 47):
+  #               file_string += ","
+  #         file_string += "],";
+  #
+  #   file_string = file_string.strip(",");
+  #
+  #   file_string += "]\n;"
+  #
+  #   # cv2.imwrite(output_directory + "/face.jpg", faceGlobal[i]);
+  #
+  #
+  # return file_string
+  # cv2.waitKey(0);
 
-    file_string = file_string.strip(",");
+out_arr = []
 
-    output_file.write(file_string + "]\n");
-    
-    cv2.imwrite(output_directory + "\\face.jpg", faceGlobal[i]);
+output_file = open(output_directory + "/output_file.txt", "w");
+for i in range(0, len(faceGlobal)):
+   file_string = "[";
+   file_arr = []
+   for j in range(0, 48):
+       row = []
+       file_string += "["
+       for k in range(0, 48):
+           file_string += str(faceGlobal[i][j][k][0]);
+           row.append(faceGlobal[i][j][k][0])
 
-  cv2.waitKey(0);
+           if (k != 47):
+               file_string += ","
 
-def main():
-  cropPic(image)
-  
+
+       file_arr.append(row)
+
+
+
+       file_string += "],"
+
+   file_string = file_string.strip(",");
+   out_arr.append(file_arr)
+
+
+
+   output_file.write(file_string + "]\n");
+
+   cv2.imwrite(output_directory + "/face_" + str(i) + ".jpg", faceGlobal[i]);
+
+print (out_arr)
+print (e_p.emotion(out_arr))
+
+
+output_file.close()
+cv2.waitKey(0);
+
+
+
+
+
+def return_emotion(image):
+    return e_p.emotion(cropPic(image))
+
+def main(image):
+  # cropPic(image)
+  print (return_emotion(image))
+
+
 if __name__ == "__main__":
    main()
